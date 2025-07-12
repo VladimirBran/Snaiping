@@ -39,12 +39,28 @@ jobs:
       - name: Run only SmokeSuite
         run: mvn clean test -Dtest=${{ github.event.inputs.testClass}} io.qameta.allure:allure-maven:report
 
-      # 5️⃣ Upload Allure report as artifact
-      - name: Upload Allure Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report
-          path: target/site/allure-maven-plugin
+#      # 5️⃣ Upload Allure report as artifact
+#      - name: Upload Allure Report
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: allure-report
+#          path: target/site/allure-maven-plugin
+
+#      # 📦 Сборка и генерация Allure отчёта
+#      - name: Run tests and generate Allure report
+#        run: |
+#          mvn clean test
+#          mvn allure:report
+
+      # 📑 Устанавливаем wkhtmltopdf для конвертации HTML → PDF
+      - name: Install wkhtmltopdf
+        run: sudo apt-get install -y wkhtmltopdf
+
+      # 📃 Конвертируем Allure report в PDF
+      - name: Convert Allure report to PDF
+        run: |
+          mkdir -p pdf-report
+          wkhtmltopdf target/site/allure-maven-plugin/index.html pdf-report/allure-report.pdf
 
       # 6️⃣ Notify Telegram with test status and link to artifact
       - name: Notify Telegram
