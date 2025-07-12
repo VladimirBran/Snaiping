@@ -4,8 +4,7 @@ target/
 !**/src/test/**/target/
 
 #Ignore setting files
-src/test/resources/conf.properties
-.gitignore
+
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
