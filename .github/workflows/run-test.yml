@@ -35,9 +35,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # 4️⃣ Run tests with Allure
-      - name: Run only SmokeSuite
-        run: mvn clean test -Dtest=${{ github.event.inputs.testClass}} io.qameta.allure:allure-maven:report
+#      # 4️⃣ Run tests with Allure
+#      - name: Run only SmokeSuite
+#        run: mvn clean test -Dtest=${{ github.event.inputs.testClass}} io.qameta.allure:allure-maven:report
 
 #      # 5️⃣ Upload Allure report as artifact
 #      - name: Upload Allure Report
@@ -46,11 +46,11 @@ jobs:
 #          name: allure-report
 #          path: target/site/allure-maven-plugin
 
-#      # 📦 Сборка и генерация Allure отчёта
-#      - name: Run tests and generate Allure report
-#        run: |
-#          mvn clean test
-#          mvn allure:report
+      # 📦 Сборка и генерация Allure отчёта
+      - name: Run tests and generate Allure report
+        run: |
+          mvn clean test
+          mvn allure:report
 
       # 📑 Устанавливаем wkhtmltopdf для конвертации HTML → PDF
       - name: Install wkhtmltopdf
