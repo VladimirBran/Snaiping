@@ -61,17 +61,28 @@ jobs:
         run: |
           mkdir -p pdf-report
           wkhtmltopdf target/site/allure-maven-plugin/index.html pdf-report/allure-report.pdf
-
-      # 6️⃣ Notify Telegram with test status and link to artifact
-      - name: Notify Telegram
-        if: always() # ✅ всегда отправляем
+          
+      # 📤 Отправляем PDF в Telegram
+      - name: Send Allure PDF to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          STATUS="${{ job.status }}"
-          ARTIFACT_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          MESSAGE="*JUnit Tests Result*: *${STATUS}*\n📦 Repo: ${{ github.repository }}\n🔀 Branch: ${{ github.ref_name }}\n📄 Suite: AllTestsSuite\n[🔗 View Allure Report Artifact](${ARTIFACT_URL})"
-          echo "Sending Telegram notification..."
-          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
-            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d parse_mode=Markdown \
-            -d text="$MESSAGE")
-          echo "$RESPONSE"
+          curl -F document=@pdf-report/allure-report.pdf \
+          "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" \
+          -F chat_id="${TELEGRAM_CHAT_ID}" \
+          -F caption="📊 Allure Report PDF"
+
+#      # 6️⃣ Notify Telegram with test status and link to artifact
+#      - name: Notify Telegram
+#        if: always() # ✅ всегда отправляем
+#        run: |
+#          STATUS="${{ job.status }}"
+#          ARTIFACT_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+#          MESSAGE="*JUnit Tests Result*: *${STATUS}*\n📦 Repo: ${{ github.repository }}\n🔀 Branch: ${{ github.ref_name }}\n📄 Suite: AllTestsSuite\n[🔗 View Allure Report Artifact](${ARTIFACT_URL})"
+#          echo "Sending Telegram notification..."
+#          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+#            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+#            -d parse_mode=Markdown \
+#            -d text="$MESSAGE")
+#          echo "$RESPONSE"
