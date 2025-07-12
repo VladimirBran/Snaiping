@@ -39,6 +39,12 @@ jobs:
       - name: Run only SmokeSuite
         run: mvn clean test -Dtest=${{ github.event.inputs.testClass}} io.qameta.allure:allure-maven:report
 
+      # 🩹 Фиксим base href для GitHub Pages
+      - name: Fix Allure base href for GitHub Pages
+        run: |
+          REPO_NAME=${GITHUB_REPOSITORY#*/}
+          sed -i "s#<head>#<head><base href=\"/${REPO_NAME}/allure-report/\">#" target/site/allure-maven-plugin/index.html
+
       # 5️⃣ Upload Allure report as artifact
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
