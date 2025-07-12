@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 5 * * *' # 8:00 по МСК
   workflow_dispatch: # ручной запуск
+    inputs:
+      testClass:
+        description: 'Набор smoke тестов'
+        default: 'SmokeSuite'
+        required: true
 
 jobs:
   build-and-test:
@@ -31,8 +36,8 @@ jobs:
             ${{ runner.os }}-maven-
 
       # 4️⃣ Run tests with Allure
-      - name: Run tests and generate Allure results
-        run: mvn clean test io.qameta.allure:allure-maven:report
+      - name: Run only SmokeSuite
+        run: mvn clean test -Dtest=${{ github.event.inputs.testClass}} io.qameta.allure:allure-maven:report
 
       # 5️⃣ Upload Allure report as artifact
       - name: Upload Allure Report
