@@ -72,23 +72,16 @@ jobs:
 #          "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument" \
 #          -F chat_id="${TELEGRAM_CHAT_ID}" \
 #          -F caption="📊 Allure Report PDF"
-      # 🖌️ Определяем STATUS
-      - name: Set pretty STATUS
-        run: |
-          if [ "${TESTS_FAILED}" == "true" ]; then
-            echo "STATUS=❌ *FAILED*" >> $GITHUB_ENV
-          else
-            echo "STATUS=✅ *PASSED*" >> $GITHUB_ENV
-          fi
+
 
       # 6️⃣ Notify Telegram with test status and link to artifact (отправка отчета в ТГ)
       - name: Notify Telegram
         if: always() # ✅ всегда отправляем
         run: |
-#          STATUS="${{ job.status }}"
+          STATUS="${{ job.status }}"
           ARTIFACT_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          MESSAGE="*JUnit Tests Result*: ${STATUS}\n\
-          📄 Suite: SmokeSuite\n\
+          MESSAGE="*JUnit Tests Result*: *${STATUS}*\n\
+          📄 Suite: AllTestsSuite\n\
           [🔗 View Allure Report Artifact](${ARTIFACT_URL})"
           echo "Sending Telegram notification..."
           RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
