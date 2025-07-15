@@ -81,7 +81,7 @@ jobs:
           STATUS="${{ job.status }}"
           ARTIFACT_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           MESSAGE="*JUnit Tests Result*: *${STATUS}*\n\
-          📄 Suite: SmokeSuite\n\
+          📄 Suite: AllTestsSuite\n\
           [🔗 View Allure Report Artifact](${ARTIFACT_URL})"
           echo "Sending Telegram notification..."
           RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
